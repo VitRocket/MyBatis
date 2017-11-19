@@ -1,5 +1,6 @@
 package com.github.vitrocket.mybatis.controller;
 
+import com.github.vitrocket.mybatis.web.controller.IndexController;
 import javafx.beans.binding.Bindings;
 import org.junit.Test;
 import org.junit.runner.RunWith;

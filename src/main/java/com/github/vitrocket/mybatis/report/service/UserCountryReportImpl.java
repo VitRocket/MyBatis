@@ -1,23 +1,15 @@
 package com.github.vitrocket.mybatis.report.service;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.github.vitrocket.mybatis.report.directory.DocumentType;
 import com.github.vitrocket.mybatis.report.pojo.UserCountryDTO;
 import com.github.vitrocket.mybatis.report.writer.WriterDocument;
+import com.github.vitrocket.mybatis.report.writer.WriterFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.sql.Array;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /**
@@ -28,12 +20,12 @@ import java.util.*;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class UserCountryServiceImpl implements UserCountryService {
+public class UserCountryReportImpl implements UserCountryReport {
 
-    private final WriterDocument writerDocument;
+    private final WriterFactory writerFactory;
 
     @Override
-    public String createReport(List<UserCountryDTO> userCountryDTOs) {
+    public String createReport(DocumentType documentType, List<UserCountryDTO> userCountryDTOs, LocalDate localDate) {
         ArrayList<ArrayList<Object>> dataList = new ArrayList<>();
         ArrayList<Object> header = new ArrayList<>(Arrays.asList(
                 "Country Name",
@@ -50,7 +42,12 @@ public class UserCountryServiceImpl implements UserCountryService {
                     userCountryDTO.getDateOpened()));
             dataList.add(data);
         }
-        String localFile = writerDocument.makeLocal(dataList);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String fileName = "UserCountry_" + localDate.format(formatter);
+
+        WriterDocument writerDocument = writerFactory.getWriterDocument(documentType);
+        String localFile = writerDocument.makeLocal(dataList, fileName);
         log.info(localFile);
         return localFile;
     }

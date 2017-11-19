@@ -1,6 +1,5 @@
 package com.github.vitrocket.mybatis.report.writer;
 
-import com.github.vitrocket.mybatis.report.pojo.UserCountryDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Cell;
@@ -10,7 +9,6 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -22,29 +20,19 @@ import java.util.ArrayList;
  * @since on 19.11.2017
  */
 @Slf4j
-@Service
-@RequiredArgsConstructor
-public class WriterExcel implements WriterDocument {
-
-    private static final String FILE_NAME = "/UserCountry.xlsx";
+public class WriterXlsx implements WriterDocument {
 
     @Override
-    public String makeLocal(ArrayList<ArrayList<Object>> dataList) {
-
-
+    public String makeLocal(ArrayList<ArrayList<Object>> dataList, String fileName) {
         String rootPath = System.getProperty("user.dir") + "/reports";
         File destFile = new File(rootPath);
-        log.info(destFile.toString());
         destFile.mkdirs();
-        String fileName = rootPath + FILE_NAME;
-        log.info(fileName);
-
+        String fileNameOut = rootPath + "/" + fileName + ".slsx";
 
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet sheet = workbook.createSheet("Country user");
 
         int rowNum = 0;
-        System.out.println("Creating excel");
 
         for (ArrayList<Object> objects : dataList) {
             Row row = sheet.createRow(rowNum++);
@@ -62,16 +50,12 @@ public class WriterExcel implements WriterDocument {
         }
 
         try {
-            FileOutputStream outputStream = new FileOutputStream(fileName);
+            FileOutputStream outputStream = new FileOutputStream(fileNameOut);
             workbook.write(outputStream);
             workbook.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error(e.getLocalizedMessage());
         }
-
-        System.out.println("Done");
-
-
-        return fileName;
+        return fileNameOut;
     }
 }

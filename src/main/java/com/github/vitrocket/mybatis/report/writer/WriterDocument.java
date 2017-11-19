@@ -1,5 +1,6 @@
 package com.github.vitrocket.mybatis.report.writer;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 /**
@@ -8,7 +9,5 @@ import java.util.ArrayList;
  * @since on 19.11.2017
  */
 public interface WriterDocument {
-
-    String makeLocal(ArrayList<ArrayList<Object>> dataList);
-
+    String makeLocal(ArrayList<ArrayList<Object>> dataList, String fileName);
 }

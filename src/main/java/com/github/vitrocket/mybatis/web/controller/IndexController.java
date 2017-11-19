@@ -1,4 +1,4 @@
-package com.github.vitrocket.mybatis.controller;
+package com.github.vitrocket.mybatis.web.controller;
 
 import com.github.vitrocket.mybatis.report.pojo.UserCountryDTO;
 import com.github.vitrocket.mybatis.report.facade.UserCountryFacade;
@@ -15,23 +15,11 @@ import java.util.List;
  * @version 1.0
  * @since on 18.11.2017
  */
-@Slf4j
 @RestController
-@RequiredArgsConstructor
 public class IndexController {
-
-    private final UserCountryFacade userCountryFacade;
 
     @GetMapping("/hello")
     public String index() {
         return "Hello MyBatis";
     }
-
-    @GetMapping("/demo")
-    public List<UserCountryDTO> demo() {
-        List<UserCountryDTO> userCountryDTOs = userCountryFacade.getUserCountryDTO(LocalDate.of(2017, 10, 25));
-        log.info("sessions size: " + userCountryDTOs.size());
-        return userCountryDTOs;
-    }
-
 }
