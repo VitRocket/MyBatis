@@ -17,7 +17,6 @@ import java.util.*;
  * @version 1.0
  * @since on 19.11.2017
  */
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserCountryReportImpl implements UserCountryReport {
@@ -33,7 +32,6 @@ public class UserCountryReportImpl implements UserCountryReport {
                 "User Name",
                 "Date opened"));
         dataList.add(header);
-
         for (UserCountryDTO userCountryDTO : userCountryDTOs) {
             ArrayList<Object> data = new ArrayList<>(Arrays.asList(
                     userCountryDTO.getCountryName(),
@@ -42,13 +40,9 @@ public class UserCountryReportImpl implements UserCountryReport {
                     userCountryDTO.getDateOpened()));
             dataList.add(data);
         }
-
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         String fileName = "UserCountry_" + localDate.format(formatter);
-
         WriterDocument writerDocument = writerFactory.getWriterDocument(documentType);
-        String localFile = writerDocument.makeLocal(dataList, fileName);
-        log.info(localFile);
-        return localFile;
+        return writerDocument.makeLocal(dataList, fileName);
     }
 }

@@ -1,6 +1,8 @@
 package com.github.vitrocket.mybatis.report.facade;
 
 import com.github.vitrocket.mybatis.entity.Session;
+import com.github.vitrocket.mybatis.mail.EmailMessage;
+import com.github.vitrocket.mybatis.mail.EmailService;
 import com.github.vitrocket.mybatis.report.directory.DocumentType;
 import com.github.vitrocket.mybatis.report.pojo.UserCountryDTO;
 import com.github.vitrocket.mybatis.report.service.UserCountryReport;
@@ -9,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.mail.MessagingException;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
@@ -26,6 +30,7 @@ public class UserCountryFacadeImpl implements UserCountryFacade {
 
     private final SessionService sessionService;
     private final UserCountryReport userCountryReport;
+    private final EmailService emailService;
 
     @Override
     public void makeDocument(String email, DocumentType documentType, LocalDate localDate) {
@@ -36,7 +41,17 @@ public class UserCountryFacadeImpl implements UserCountryFacade {
         String file = userCountryReport.createReport(documentType, userCountryDTOs, localDate);
         log.info(file);
 
-        //TODO will make to send email
+        EmailMessage emailMessage = new EmailMessage();
+        emailMessage.setTo(email);
+        emailMessage.setSubject("Report " + documentType + localDate);
+        emailMessage.setContent("Report " + documentType + localDate);
+        emailMessage.setFrom("example@example.com");
+        emailMessage.setAttachment(file);
 
+        try {
+            emailService.sendEmail(emailMessage);
+        } catch (MessagingException | IOException e) {
+            e.printStackTrace();
+        }
     }
 }
