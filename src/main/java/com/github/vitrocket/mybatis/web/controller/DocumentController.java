@@ -5,6 +5,8 @@ import com.github.vitrocket.mybatis.web.facade.DocumentFacade;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.formula.functions.T;
+import org.apache.shiro.authz.annotation.Logical;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +26,7 @@ public class DocumentController {
     //Example http://localhost:8181/get_document/?email=test@mail.com&doc_format=xls&filter=2017-10-25
 
     @GetMapping(value = "/")
-    @ResponseBody
+    @RequiresRoles(logical = Logical.OR, value = {"report"})
     public ResponseEntity<String> getRequest(
             @RequestParam("email") String email,
             @RequestParam("doc_format") String documentType,
